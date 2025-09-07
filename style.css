@@ -12,14 +12,15 @@ body {
   margin: 20px auto;
   padding: 15px;
   border: 1px solid #ccc;
-  width: 400px;
+  width: 95%;          /* ✅ 改成百分比，适配手机屏幕 */
+  max-width: 600px;    /* ✅ 桌面端不会太大 */
   border-radius: 10px;
   box-shadow: 2px 2px 5px #aaa;
 }
 
 .question img {
-  max-width: 100%;
-  height: auto;
+  width: 100%;   /* ✅ 占满容器 */
+  height: auto;  /* ✅ 保持比例 */
   margin-bottom: 10px;
 }
 
@@ -27,6 +28,8 @@ body {
   margin: 5px;
   padding: 10px 20px;
   cursor: pointer;
+  width: 40%;          /* ✅ 在手机上两列显示 */
+  max-width: 150px;    /* ✅ 桌面端不太大 */
 }
 
 #progress {
