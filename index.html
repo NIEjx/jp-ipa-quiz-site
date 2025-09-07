@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>刷题系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>年と試験種別を選択して試験を開始します</h1>
+  <div id="exam-selector">
+  <select id="yearSelect">
+    <option value="">年を選択</option>
+    <option value="2025">2025</option>
+    <option value="2024">2024</option>
+    <option value="2023">2023</option>
+    <option value="2022">2022</option>
+    <option value="2021">2021</option>
+    <option value="2020">2020</option>
+    <option value="2019">2019</option>
+    <option value="2018">2018</option>
+    <option value="2017">2017</option>
+    <option value="2016">2016</option>
+    <option value="2015">2015</option>
+    <option value="2014">2014</option>
+    <option value="2013">2013</option>
+    <option value="2012">2012</option>
+    <option value="2011">2011</option>
+    <option value="2010">2010</option>
+    <option value="2009">2009</option>
+  </select>
+  <select id="typeSelect">
+    <option value="">試験を選択</option>
+    <option value="es">エンベデッドスペシャリスト</option>
+    <option value="h_ap">応用情報_春</option>
+    <option value="a_ap">応用情報_秋</option>
+  </select>
+      <button id="startBtn">試験開始</button>
+  </div>
+
+  <div id="quizContainer" style="margin-top:20px;"></div>
+  <div id="progress"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
