@@ -1,6 +1,7 @@
 let questions = [];
 let currentIndex = 0;
 let results = {}; // クイズ番号:正誤
+let correctCnt = 0;
 let quizKey = ""; // localStorage key
 
 document.getElementById("startBtn").addEventListener("click", () => {
@@ -12,7 +13,7 @@ document.getElementById("startBtn").addEventListener("click", () => {
     }
     quizKey = `${year}_${type}`;
     localStorage.removeItem(quizKey); // データをクリア
-
+    correctCnt = 0;
     fetch(`data/${type}/${quizKey}.csv`)
         .then(res => res.text())
         .then(text => {
@@ -35,6 +36,7 @@ function parseCSV(text) {
 
 function showQuestion() {
     const container = document.getElementById("quizContainer");
+    document.getElementById("title").style.display = "none";
     container.innerHTML = "";
     if (currentIndex >= questions.length) {
         showResult();
@@ -61,6 +63,7 @@ function showQuestion() {
             if (q.answer === opt) {
                 btn.style.background = "lightgreen";
                 results[q.id] = "correct";
+                correctCnt += 1;
             } else {
                 btn.style.background = "salmon";
                 results[q.id] = "wrong";
@@ -92,19 +95,20 @@ function showQuestion() {
 
 function updateProgress() {
     const progress = document.getElementById("progress");
-    progress.innerText = `現在 ${currentIndex} / ${questions.length} 問`;
+    progress.innerText = `現在 ${currentIndex +1 } / ${questions.length} 問 \n 正解数 ${correctCnt} / ${currentIndex}`;
 }
 
 function showResult() {
     const container = document.getElementById("quizContainer");
+    document.getElementById("title").style.display = "block";
     container.innerHTML = "<h2>結果</h2>";
 
     const correct = Object.values(results).filter(v => v === "correct").length;
     const wrong = Object.values(results).filter(v => v === "wrong").length;
     const wrongIds = Object.keys(results).filter(k => results[k] === "wrong");
 
-    container.innerHTML += `<p>总题数：${questions.length}</p>`;
-    container.innerHTML += `<p>正确：${correct}</p>`;
-    container.innerHTML += `<p>错误：${wrong}</p>`;
-    container.innerHTML += `<p>错题号：${wrongIds.join(", ") || "无"}</p>`;
+    container.innerHTML += `<p>問題数：${questions.length}</p>`;
+    container.innerHTML += `<p>正解数：${correct}</p>`;
+    container.innerHTML += `<p>間違い数：${wrong}</p>`;
+    container.innerHTML += `<p>間違った問題：${wrongIds.join(", ") || "全問正解"}</p>`;
 }
