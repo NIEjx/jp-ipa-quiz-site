@@ -2,7 +2,7 @@ let questions = [];
 let currentIndex = 0;
 let results = {}; // クイズ番号:正誤
 let correctCnt = 0;
-let quizKey = ""; // localStorage key
+let quizKey = "lastProgress"; // localStorage key
 
 document.getElementById("startBtn").addEventListener("click", () => {
     const year = document.getElementById("yearSelect").value;
@@ -11,10 +11,9 @@ document.getElementById("startBtn").addEventListener("click", () => {
         alert("年と試験を選択してください");
         return;
     }
-    quizKey = `${year}_${type}`;
     localStorage.removeItem(quizKey); // データをクリア
     correctCnt = 0;
-    fetch(`data/${type}/${quizKey}.csv`)
+    fetch(`data/${type}/${year}_${type}.csv`)
         .then(res => res.text())
         .then(text => {
             questions = parseCSV(text);
@@ -72,7 +71,14 @@ function showQuestion() {
                 if (correctBtn) correctBtn.style.background = "lightgreen";
             }
 
-            localStorage.setItem(quizKey, JSON.stringify(results));
+            const latestProg = {
+                year: document.getElementById("yearSelect").value,
+                type: document.getElementById("typeSelect").value,
+                currentIndex: currentIndex,
+                correctCnt: correctCnt,
+                results: results
+            };
+            localStorage.setItem(quizKey, JSON.stringify(latestProg));
 
             // 显示“下一题”按钮
             const nextBtn = document.createElement("button");
@@ -112,3 +118,32 @@ function showResult() {
     container.innerHTML += `<p>間違い数：${wrong}</p>`;
     container.innerHTML += `<p>間違った問題：${wrongIds.join(", ") || "全問正解"}</p>`;
 }
+
+function loadLastProgess() {
+    let data = localStorage.getItem(quizKey);
+    return data ? JSON.parse(data) :null;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    const progress = loadLastProgess();
+    if (progress) {
+        if (confirm(`前回は ${progress.year} 年の ${progress.type} 試験の第 ${progress.currentIndex + 1} 問を進行中、復帰しますか？`)) {
+            currentYear = progress.year;
+            currentType = progress.type;
+            document.getElementById("yearSelect").value = currentYear;
+            document.getElementById("typeSelect").value = currentType;
+            currentIndex = progress.currentIndex;
+            correctCnt = correctCnt
+            results = progress.results;
+
+            fetch(`data/${currentType}/${currentYear}_${currentType}.csv`)
+                .then(res => res.text())
+                .then(text => {
+                    questions = parseCSV(text);
+                    showQuestion();
+                });
+        } else {
+            localStorage.removeItem(quizKey);
+        }   
+    }
+});
