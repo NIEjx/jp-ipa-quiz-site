@@ -59,6 +59,7 @@ function showQuestion() {
             // 冻结所有按钮
             buttons.forEach(b => b.disabled = true);
 
+            currentIndex++;
             if (q.answer === opt) {
                 btn.style.background = "lightgreen";
                 results[q.id] = "correct";
@@ -70,6 +71,7 @@ function showQuestion() {
                 const correctBtn = buttons.find(b => b.innerText === q.answer);
                 if (correctBtn) correctBtn.style.background = "lightgreen";
             }
+            updateProgress();
 
             const latestProg = {
                 year: document.getElementById("yearSelect").value,
@@ -85,7 +87,6 @@ function showQuestion() {
             nextBtn.innerText = "次の問題";
             nextBtn.style.marginTop = "10px";
             nextBtn.onclick = () => {
-                currentIndex++;
                 showQuestion();
             };
             div.appendChild(document.createElement("br"));
@@ -101,7 +102,7 @@ function showQuestion() {
 
 function updateProgress() {
     const progress = document.getElementById("progress");
-    progress.innerText = `現在 ${currentIndex +1 } / ${questions.length} 問 \n 正解数 ${correctCnt} / ${currentIndex}`;
+    progress.innerText = `現在 ${currentIndex +1 } / ${questions.length} 問 \n 正解数 ${correctCnt} / ${currentIndex} ${Math.floor(100*correctCnt/currentIndex)}%`;
 }
 
 function showResult() {
@@ -115,6 +116,7 @@ function showResult() {
 
     container.innerHTML += `<p>問題数：${questions.length}</p>`;
     container.innerHTML += `<p>正解数：${correct}</p>`;
+    container.innerHTML += `<p>正解率：${Math.floor(100*correctCnt/currentIndex)}%</p>`;
     container.innerHTML += `<p>間違い数：${wrong}</p>`;
     container.innerHTML += `<p>間違った問題：${wrongIds.join(", ") || "全問正解"}</p>`;
 }
@@ -133,7 +135,7 @@ window.addEventListener("DOMContentLoaded", () => {
             document.getElementById("yearSelect").value = currentYear;
             document.getElementById("typeSelect").value = currentType;
             currentIndex = progress.currentIndex;
-            correctCnt = correctCnt
+            correctCnt = progress.correctCnt
             results = progress.results;
 
             fetch(`data/${currentType}/${currentYear}_${currentType}.csv`)
